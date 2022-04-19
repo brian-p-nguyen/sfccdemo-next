@@ -1,0 +1,16 @@
+{
+  "name": "Next Reference Store",
+  "short_name": "Next Ref",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": ["192x192", "512x512"],
+      "type": "image/svg+xml"
+    }
+  ],
+  "theme_color": "#4f46e5",
+  "background_color": "#fff",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait"
+}
