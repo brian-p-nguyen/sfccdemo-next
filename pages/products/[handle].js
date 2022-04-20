@@ -16,21 +16,21 @@ function Product({ product, content }) {
               <ProductGallery product={product} />
               <div>
                 <ProductDetails product={product} />
-                {content && !!content.fields.productFeatures.length && (
+                {/* {content && !!content.fields.productFeatures.length && (
                   <ProductExpandable
                     features={content.fields.productFeatures}
                   />
-                )}
+                )} */}
               </div>
             </div>
-            {content &&
+            {/* {content &&
               content.fields.sections.map(({ fields, sys }) => (
                 <DynamicComponent
                   key={sys.id}
                   component={sys.contentType.sys.id}
                   fields={fields}
                 />
-              ))}
+              ))} */}
           </div>
         </div>
       </>
@@ -65,14 +65,14 @@ export async function getStaticProps({ params }) {
     variables: { handle: params.handle }
   });
 
-  const content = await nacelleClient.content({
-    handles: [params.handle]
-  });
+  // const content = await nacelleClient.content({
+  //   handles: [params.handle]
+  // });
 
   return {
     props: {
       product: products[0],
-      content: content?.[0] || null
+      // content: content?.[0] || null
     }
   };
 }
