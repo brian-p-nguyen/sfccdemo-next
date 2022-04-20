@@ -62,11 +62,11 @@ function ProductCard({ product }) {
     product && (
       <div className={styles.card}>
         <Link
-          href={`/products/${encodeURIComponent(product.content.handle)}`}
+          href={`/products/${encodeURIComponent(product.content?.handle)}`}
           className={styles.media}
         >
           <a>
-            {product.content.media ? (
+            {product.content?.media ? (
               <Image
                 src={`https://zyed-001.sandbox.us01.dx.commercecloud.salesforce.com/on/demandware.static/-/Sites-apparel-m-catalog/default/dw2413bfcb/images/${product.content.media[0].src}`}
                 alt="{product.content.media[0].id}"
@@ -80,17 +80,17 @@ function ProductCard({ product }) {
           </a>
         </Link>
         <div className={styles.main}>
-          {product.content.title && (
+          {product.content?.title && (
             <h2 className={styles.title}>{product.content.title}</h2>
           )}
-          <div className={styles.prices}>
+          {/* <div className={styles.prices}>
             {selectedVariant.price && (
               <div className={styles.compare}>
                 ${selectedVariant.price}
               </div>
             )}
             <div>${selectedVariant.price}</div>
-          </div>
+          </div> */}
           {options &&
             options.map((option, oIndex) => (
               <div key={oIndex}>
@@ -111,7 +111,7 @@ function ProductCard({ product }) {
             ))}
           <button
             type="button"
-            disabled={!selectedVariant.availableForSale}
+            // disabled={!selectedVariant.availableForSale}
             onClick={handleAddItem}
           >
             {buttonText}
