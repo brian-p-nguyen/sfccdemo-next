@@ -1,105 +1,100 @@
-import { useState } from 'react'
-import Link from 'next/link'
-import Image from 'next/image'
-import { useCart } from '@nacelle/react-hooks'
-import { getSelectedVariant } from 'utils/getSelectedVariant'
-import { getCartVariant } from 'utils/getCartVariant'
-import styles from './ProductCard.module.css'
+import { useContext, useState } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { useCart } from '@nacelle/react-hooks';
+import { getSelectedVariant } from 'utils/getSelectedVariant';
+import { getCartVariant } from 'utils/getCartVariant';
+import SiteContext from 'context/SiteContext';
 
 function ProductCard({ product }) {
-  const [, { addToCart }] = useCart()
-  const [selectedVariant, setSelectedVariant] = useState(product.variants[0])
-  // const [selectedOptions, setSelectedOptions] = useState(
-  //   selectedVariant.content.selectedOptions
-  // );
+  const { setSidebarCartOpen } = useContext(SiteContext);
+  const [, { addToCart }] = useCart();
+  const [miniATCOpen, setMiniATCOpen] = useState(false);
+  const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
+  const [selectedOptions, setSelectedOptions] = useState(
+    selectedVariant?.content?.selectedOptions
+  );
 
-  let options = null
+  let options = null;
   if (product?.content?.options?.some((option) => option.values.length > 1)) {
-    options = product?.content?.options
+    options = product?.content?.options;
   }
 
   const buttonText = selectedVariant
     ? selectedVariant.availableForSale
       ? 'Add To Cart'
       : 'Sold Out'
-    : 'Select Option'
+    : 'Select Option';
 
   const handleOptionChange = (event, option) => {
-    const newOption = { name: option.name, value: event.target.value }
+    const newOption = { name: option.name, value: event.target.value };
     const optionIndex = selectedOptions.findIndex((selectedOption) => {
-      return selectedOption.name === newOption.name
-    })
+      return selectedOption.name === newOption.name;
+    });
 
-    const newSelectedOptions = [...selectedOptions]
+    const newSelectedOptions = [...selectedOptions];
     if (optionIndex > -1) {
-      newSelectedOptions.splice(optionIndex, 1, newOption)
-      setSelectedOptions([...newSelectedOptions])
+      newSelectedOptions.splice(optionIndex, 1, newOption);
+      setSelectedOptions([...newSelectedOptions]);
     } else {
-      setSelectedOptions([...newSelectedOptions, newOption])
+      setSelectedOptions([...newSelectedOptions, newOption]);
     }
     const variant = getSelectedVariant({
       product,
-      options: newSelectedOptions,
-    })
-    setSelectedVariant(variant ? { ...variant } : null)
-  }
+      options: newSelectedOptions
+    });
+    setSelectedVariant(variant ? { ...variant } : null);
+  };
 
-  // Get product data and add it to the cart by using `addToCart`
-  // from the `useCart` hook provided by `@nacelle/react-hooks`.
-  // (https://github.com/getnacelle/nacelle-react/tree/main/packages/react-hooks)
   const handleAddItem = () => {
     const variant = getCartVariant({
       product,
-      variant: selectedVariant,
-    })
+      variant: selectedVariant
+    });
     addToCart({
       variant,
-      quantity: 1,
-    })
-  }
+      quantity: 1
+    });
+    setSidebarCartOpen(true);
+  };
 
   return (
     product && (
-      <div className={styles.card}>
-        <Link
-          href={`/products/${encodeURIComponent(product.content?.handle)}`}
-          className={styles.media}
-        >
-          <a>
-            {product.content?.media ? (
-              <Image
-                src={`https://zyed-001.sandbox.us01.dx.commercecloud.salesforce.com/on/demandware.static/-/Sites-apparel-m-catalog/default/dw2413bfcb/images/${product.content.media[0].src}`}
-                alt="{product.content.media[0].id}"
-                width={530}
-                height={350}
-                className={styles.image}
-              />
-            ) : (
-              <div>No Image</div>
-            )}
-          </a>
-        </Link>
-        <div className={styles.main}>
-          {product.content?.title && (
-            <h2 className={styles.title}>{product.content.title}</h2>
-          )}
-          {/* <div className={styles.prices}>
-            {selectedVariant.price && (
-              <div className={styles.compare}>
-                ${selectedVariant.price}
-              </div>
-            )}
-            <div>${selectedVariant.price}</div>
-          </div> */}
-          {options &&
-            options.map((option, oIndex) => (
-              <div key={oIndex}>
-                <label htmlFor={`select-${oIndex}-${product.id}`}>
-                  {option.name}
-                </label>
+      <div
+        className="relative"
+        onMouseEnter={() => setMiniATCOpen(true)}
+        onMouseLeave={() => setMiniATCOpen(false)}
+      >
+        <div className="w-full aspect-w-1 aspect-h-1 bg-gray-200 rounded-lg overflow-hidden xl:aspect-w-7 xl:aspect-h-8">
+          <Link
+            href={`/products/${encodeURIComponent(product.content?.handle)}`}
+            passHref
+          >
+            <a className="group relative">
+              {product.content?.featuredMedia ? (
+                <>
+                  <Image
+                    src={`https://zyed-001.sandbox.us01.dx.commercecloud.salesforce.com/on/demandware.static/-/Sites-apparel-m-catalog/default/dw2413bfcb/images/${product.content.media[0].src}`}
+                    alt={product.content.media[0].id}
+                    layout="fill"
+                    objectFit="cover"
+                  />
+                  <div className="absolute top-0 left-0 w-full h-full z-2 bg-white opacity-0 hover:opacity-30" />
+                </>
+              ) : (
+                <div>No Image</div>
+              )}
+            </a>
+          </Link>
+        </div>
+        {miniATCOpen ? (
+          <div>
+            {options &&
+              options.map((option, i) => (
                 <select
-                  id={`select-${oIndex}-${product.id}`}
-                  onChange={($event) => handleOptionChange($event, option)}
+                  key={i}
+                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md mt-3"
+                  onChange={(event) => handleOptionChange(event, option)}
                 >
                   {option.values.map((value, vIndex) => (
                     <option key={vIndex} value={value}>
@@ -107,19 +102,42 @@ function ProductCard({ product }) {
                     </option>
                   ))}
                 </select>
-              </div>
-            ))}
-          <button
-            type="button"
-            // disabled={!selectedVariant.availableForSale}
-            onClick={handleAddItem}
-          >
-            {buttonText}
-          </button>
-        </div>
+              ))}
+            <button
+              type="button"
+              disabled={!selectedVariant?.availableForSale}
+              onClick={handleAddItem}
+              className="relative flex bg-gray-100 border border-transparent rounded-md py-2 px-8 items-center justify-center text-sm font-medium text-gray-900 hover:bg-gray-200 w-full mt-3"
+            >
+              <span>{buttonText}</span>
+            </button>
+          </div>
+        ) : (
+          <div>
+            {product.content?.title && (
+              <h3 className="mt-4 text-sm text-gray-700">
+                {product.content.title}
+              </h3>
+            )}
+            {selectedVariant?.compareAtPrice ? (
+              <p className="mt-1 text-lg font-medium text-gray-900">
+                <span className="text-red-600">
+                  ${selectedVariant.price.toFixed(2)}
+                </span>{' '}
+                <span className="line-through">
+                  ${selectedVariant.compareAtPrice.toFixed(2)}
+                </span>
+              </p>
+            ) : (
+              <p className="mt-1 text-lg font-medium text-gray-900">
+                <span>${selectedVariant?.price?.toFixed(2)}</span>
+              </p>
+            )}
+          </div>
+        )}
       </div>
     )
-  )
+  );
 }
 
-export default ProductCard
+export default ProductCard;
