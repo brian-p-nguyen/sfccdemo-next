@@ -23,9 +23,7 @@ export async function getStaticProps({ params }) {
     // using the handle of the current page.
     // (https://nacelle.com/docs/querying-data/storefront-sdk)
     const content = await nacelleClient.content({
-        nacelleEntryIds: [
-            "aWQ6Ly9DT05URU5URlVML2lvam05MXU0ZXo1Yy9tYXN0ZXIvQ09OVEVOVC83SmtVcTVHc3ZCM2ZVU1ZtMGpjcmVHL2VuLVVT",
-        ],
+        handles: ["next-reference-store-homepage-magento"],
     });
     console.log("content", content);
     return { props: content?.[0] || {} };
