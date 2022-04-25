@@ -21,34 +21,37 @@ export const filterProducts = ({ products, filters }) => {
         );
     }
     if (options.length) {
-        results = products.filter((product) =>
-            product.variants.some((variant) => {
+        results = products.filter((product) => {
+            return product.variants.some((variant) => {
                 if (variant.content === null) {
                     variant = generateVariantSelectedOptions(
                         variant,
                         product.content?.options || []
                     );
-                    console.log(variant);
-                    variant.content.selectedOptions.some((selectedOption) => {
-                        return options.some(({ name, values }) => {
-                            return (
-                                selectedOption.name === name &&
-                                values.includes(selectedOption.value)
-                            );
-                        });
-                    });
+                    return variant.content.selectedOptions.some(
+                        (selectedOption) => {
+                            return options.some(({ name, values }) => {
+                                return (
+                                    selectedOption.name === name &&
+                                    values.includes(selectedOption.value)
+                                );
+                            });
+                        }
+                    );
                 } else {
-                    variant.content.selectedOptions.some((selectedOption) => {
-                        return options.some(({ name, values }) => {
-                            return (
-                                selectedOption.name === name &&
-                                values.includes(selectedOption.value)
-                            );
-                        });
-                    });
+                    return variant.content.selectedOptions.some(
+                        (selectedOption) => {
+                            return options.some(({ name, values }) => {
+                                return (
+                                    selectedOption.name === name &&
+                                    values.includes(selectedOption.value)
+                                );
+                            });
+                        }
+                    );
                 }
-            })
-        );
+            });
+        });
     }
     return results;
 };
