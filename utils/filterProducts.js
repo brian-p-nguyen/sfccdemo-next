@@ -22,35 +22,30 @@ export const filterProducts = ({ products, filters }) => {
     }
     if (options.length) {
         results = products.filter((product) => {
-            return product.variants.some((variant) => {
-                if (variant.content === null) {
-                    variant = generateVariantSelectedOptions(
-                        variant,
-                        product.content?.options || []
-                    );
-                    return variant.content.selectedOptions.some(
-                        (selectedOption) => {
-                            return options.some(({ name, values }) => {
-                                return (
-                                    selectedOption.name === name &&
-                                    values.includes(selectedOption.value)
-                                );
-                            });
-                        }
-                    );
-                } else {
-                    return variant.content.selectedOptions.some(
-                        (selectedOption) => {
-                            return options.some(({ name, values }) => {
-                                return (
-                                    selectedOption.name === name &&
-                                    values.includes(selectedOption.value)
-                                );
-                            });
-                        }
-                    );
+            const productHasSelectedOption = product.variants.some(
+                (variant) => {
+                    if (variant.content === null) {
+                        variant = generateVariantSelectedOptions(
+                            variant,
+                            product.content?.options || []
+                        );
+                    }
+                    const variantHasSelectedOption =
+                        variant.content.selectedOptions.some(
+                            (selectedOption) => {
+                                return options.some(({ name, values }) => {
+                                    return (
+                                        selectedOption.name.toLowerCase() ===
+                                            name.toLowerCase() &&
+                                        values.includes(selectedOption.value)
+                                    );
+                                });
+                            }
+                        );
+                    return variantHasSelectedOption;
                 }
-            });
+            );
+            return productHasSelectedOption;
         });
     }
     return results;
