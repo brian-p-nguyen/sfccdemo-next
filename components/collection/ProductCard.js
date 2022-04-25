@@ -17,6 +17,7 @@ function ProductCard({ product }) {
             );
         }
     }
+    console.log(product.content.title, product);
     const { setSidebarCartOpen } = useContext(SiteContext);
     const [, { addToCart }] = useCart();
     const [miniATCOpen, setMiniATCOpen] = useState(false);
